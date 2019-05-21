@@ -4,45 +4,56 @@ import { gql } from 'apollo-boost';
 
 import './App.css';
 
+import { Container, Card, Header, Author, Image, Footer, Comment } from './Components';
+
 const App = () => (
-  <Query
-    query={gql`
-      {
-        photos {
-          author
-          url
-          comments {
+  <Container>
+    <Query
+      query={gql`
+        {
+          photos {
             author
-            text
+            url
+            comments {
+              author
+              text
+            }
           }
         }
-      }
     `}
-  >
-    {({ loading, error, data: { photos } }) => {
-      if (loading) {
-        return <p>Loading…</p>;
-      }
+    >
+      {({ loading, error, data: { photos } }) => {
+        if (loading) {
+          return <p>Loading…</p>;
+        }
 
-      if (error) {
-        return `<p>Error: ${error}</p>`;
-      }
+        if (error) {
+          return `<p>Error: ${error}</p>`;
+        }
 
-      return photos.map(({ author, url, comments }) => (
-        <div key={url}>
-          {author}
+        return photos.map(({ author, url, comments }) => (
+          <Card key={url}>
+            <Header>
+              {author}
+            </Header>
 
-          <img src={url} alt={author} />
+            <Image src={url} alt={author} />
 
-          {comments.map(({ author, text }) => (
-            <div key={`${author}${text}`}>
-              {author}: {text}
-            </div>
-          ))}
-        </div>
-      ));
-    }}
-  </Query>
+            <Footer>
+              {comments.map(({ author, text }) => (
+                <Comment key={`${author}${text}`}>
+                  <Author>
+                    {author}
+                  </Author>
+                  {text}
+                </Comment>
+              ))}
+            </Footer>
+          </Card>
+        ));
+      }}
+    </Query>
+  </Container>
 );
 
 export default App;
